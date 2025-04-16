@@ -7,11 +7,11 @@ docker run --name=<CONTAINER_NAME> --rm -p 8081:8081 <IMAGE_NAME>
 ```
 
 ## Commands to run container using docker compose
-* Run containers in attached mode
+* Run containers in attached mode. Put **--build** argument to make sure that the image is built every time.
 ```
-docker-compose up
+docker-compose up --build
 ```
 * Run containers in detached mode
 ```
-docker-compose up -d
+docker-compose up -d --build
 ```

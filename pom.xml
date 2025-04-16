@@ -23,6 +23,5 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-        <finalName>docker-app1</finalName>
     </build>
 </project>
