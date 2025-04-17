@@ -15,3 +15,14 @@ docker-compose up --build
 ```
 docker-compose up -d --build
 ```
+
+## Modes of running the application
+### Running application in standalone mode:
+Run the **app1** and **app2** applications as plain spring boot application without any containerization. Run **app1** using **--spring.profiles.active=local** configuration so that **app1** communicates with **app2** using **localhost**.
+
+### Running application in containers:
+Run the **docker-compose up --build** commands on both the apps to run the applications inside containers. The docker-compose file of **app1** points to the **env/app1.env** file and hence **app1** communicates with **app2** using host name, ie host name which is resolved by docker internally for services running in the same network. Check the below references:
+* [Udemy](https://www.udemy.com/course/docker-kubernetes-the-practical-guide/learn/lecture/22166972#overview)
+* [Docker Docs](https://docs.docker.com/compose/how-tos/networking/)
+* [Stack Overflow](https://stackoverflow.com/questions/38088279/communication-between-multiple-docker-compose-projects)
+* https://medium.com/@caysever/docker-compose-network-b86e424fad82
