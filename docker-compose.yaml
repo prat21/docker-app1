@@ -1,5 +1,6 @@
 services:
   app1:
+    env_file: "env/app1.env"
     build: .
     ports:
       - '8081:8081'
