@@ -43,3 +43,38 @@ Check the below references:
 * https://medium.com/@caysever/docker-compose-network-b86e424fad82
 
 ### Running application in kubernetes locally using minikube:
+We can test the application in kubernetes locally with the help of minikube. For that we have to first install minikube. References are given below:
+* [Udemy](https://www.udemy.com/course/docker-kubernetes-the-practical-guide/learn/lecture/22627611#overview)
+
+Start minikube:
+```
+minikube start --driver=docker
+```
+Check minikube status:
+```
+minikube status
+```
+Stop minikube:
+```
+minikube stop
+```
+Open minikube dashboard:
+```
+minikube dashboard
+```
+Also, as part of this process, create **.kube** folder in your home directory and inside that create **config** file, before installing minikube. This file holds all the kubernetes connection details to be used by **kubectl**.
+While installing minikube, this file automatically gets configured by minikube's cluster information.
+
+Once minikube is installed and kubectl is also configured, we can run the kubernetes manifest files using normal **kubectl** commands.
+
+For example:
+
+To create a deployment:
+```
+kubectl apply -f .\k8s\deployment.yaml
+```
+To create a service:
+```
+kubectl apply -f .\k8s\service.yaml
+```
+Here we are running the **app1** application with **spring.profiles.active=minikube** (set via env variable in deployment.yaml), so that app1 can communicate with **app2** using kubernetes internal DNS, which by default registers all the created service, in this case **app2-service**.
