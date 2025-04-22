@@ -21,6 +21,12 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
+## Command to push images using docker compose
+This is to push the images using docker compose tool, so that it can be run using kubernetes, as kubernetes pulls image from image repository to create deployment resource.
+```
+docker-compose push
+```
+
 ## Modes of running the application
 ### Running application in standalone mode:
 Run the **app1** and **app2** applications as plain spring boot application without any containerization. Run **app1** using **--spring.profiles.active=local** configuration so that **app1** communicates with **app2** using **localhost**.
@@ -35,3 +41,5 @@ Check the below references:
 * [Docker Docs](https://docs.docker.com/compose/how-tos/networking/)
 * [Stack Overflow](https://stackoverflow.com/questions/38088279/communication-between-multiple-docker-compose-projects)
 * https://medium.com/@caysever/docker-compose-network-b86e424fad82
+
+### Running application in kubernetes locally using minikube:
