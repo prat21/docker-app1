@@ -6,6 +6,20 @@ This app tries to make connection with **app2** and hence running app2 parallely
 Kindly clone the same from
 [docker-app2](https://github.com/prat21/docker-app2).
 
+## Command to build and push images using docker
+First login.
+```
+docker login
+```
+To build image.
+```
+docker build -t prat21/app1 .
+```
+To push image.
+```
+docker push
+```
+
 ## Command to run container using docker
 ```
 docker run --name=<CONTAINER_NAME> --rm -p 8081:8081 <IMAGE_NAME>
@@ -21,10 +35,10 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
-## Command to push images using docker compose
+## Command to build and push images using docker compose
 This is to push the images using docker compose tool, so that it can be run using kubernetes, as kubernetes pulls image from image repository to create deployment resource.
 ```
-docker-compose push
+docker-compose build --push
 ```
 
 ## Modes of running the application
@@ -69,14 +83,33 @@ Once minikube is installed and kubectl is also configured, we can run the kubern
 
 For example:
 
-To create a deployment:
+#### To create a deployment:
 ```
 kubectl apply -f .\k8s\deployment.yaml
 ```
-To create a service:
+#### To create a service:
 ```
 kubectl apply -f .\k8s\service.yaml
 ```
 Here we are running the **app1** application with **spring.profiles.active=minikube** (set via env variable in deployment.yaml), so that app1 can communicate with **app2** using kubernetes internal DNS, which by default registers all the created service, in this case **app2-service**.
 
-Please note that **app2-service** is configured as clusterIP which is an internal IP of the cluster, but since **app1-service** and **app2-service** both are inside the same cluster, hence app1 can communicate internally with app2 using internal DNS name (which is app2-service as configured in **application-minikube.yml**)
+Please note that **app2-service** is configured as clusterIP which is an internal IP of the cluster, but since **app1-service** and **app2-service** both are inside the same cluster, hence app1 can communicate internally with app2 using internal DNS name (which is app2-service as configured in **configMap.yaml**)
+
+#### To create configMap:
+```
+kubectl apply -f .\k8s\configMap.yaml
+```
+Before this we have to create clusterRole and clusterRoleBinding so that the default service account has the permission to access the configMap. Otherwise the pods will error out while starting.
+```
+kubectl apply -f .\k8s\configMapRole.yaml
+```
+#### Read configMap with help of spring cloud kubernetes project:
+We have used spring cloud kubernetes configmap project to read the configmap details from pods. Reference:
+* [Spring Cloud ConfigMap](https://docs.spring.io/spring-cloud-kubernetes/reference/property-source-config/configmap-propertysource.html)
+* [Spring Cloud Kubernetes Starters](https://docs.spring.io/spring-cloud-kubernetes/reference/getting-started.html)
+* [Youtube tutorial on how to use](https://www.youtube.com/watch?v=DiJ0Na8rWvc)
+
+The configMap name is **app1-config** and the bootstrap property **spring.cloud.kubernetes.config.name = app1-config**. Hence spring cloud configMap automatically looks up config maps with **metadata.name = app1-config** and initializes propertysource. Detailed guideline can be found in the references mentioned above.
+
+Also, we have not used **application.yml** here since we want to completely externalize our configuration and decouple it from the application using configmaps. So while running locally we have to set **spring.profiles.active = local** so that **application-local.yml** can be picked up.
+And while running the apps using docker-compose, the config is picked up from **app1.env** file.
