@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: my-app1
+  cloud:
+    kubernetes:
+      config:
+        name: app1-config

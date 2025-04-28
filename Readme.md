@@ -78,3 +78,5 @@ To create a service:
 kubectl apply -f .\k8s\service.yaml
 ```
 Here we are running the **app1** application with **spring.profiles.active=minikube** (set via env variable in deployment.yaml), so that app1 can communicate with **app2** using kubernetes internal DNS, which by default registers all the created service, in this case **app2-service**.
+
+Please note that **app2-service** is configured as clusterIP which is an internal IP of the cluster, but since **app1-service** and **app2-service** both are inside the same cluster, hence app1 can communicate internally with app2 using internal DNS name (which is app2-service as configured in **application-minikube.yml**)

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app1-config
+data:
+  application.yml: |-
+    spring:
+      profiles: minikube
+    server:
+      port: 8081
+    app2:
+      host: app2-service
+    
