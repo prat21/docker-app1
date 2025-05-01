@@ -115,4 +115,9 @@ To test the same, we attach with the session inside the pod using the following 
 kubectl attach -it alpine-pod
 ```
 This will open a session inside the pod and from there we can check the path **/config**.
-This path should contain the file **application.yml**.
+This path should contain the file **application.yml**. This proves that the configMap has been successfully mounted inside the pod.
+
+References:
+* [Docker exec command](https://docs.docker.com/reference/cli/docker/container/exec/)
+* [Kubectl exec commmand](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/)
+* [Stack Overflow](https://stackoverflow.com/questions/59965032/docker-run-with-interactive-and-tty-flag)
