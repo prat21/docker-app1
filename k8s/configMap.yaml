@@ -10,5 +10,6 @@ data:
     app2:
       host: app2-service
     reload:
-      test: reloadTestValue2
+      test: reloadTestValue44
+    management.endpoints.web.exposure.include: refresh
     

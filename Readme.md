@@ -125,3 +125,17 @@ References:
 * [Docker exec command](https://docs.docker.com/reference/cli/docker/container/exec/)
 * [Kubectl exec commmand](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/)
 * [Stack Overflow](https://stackoverflow.com/questions/59965032/docker-run-with-interactive-and-tty-flag)
+
+#### Mount configMap in the app1 deployment:
+The configMap can be mounted in the **app1** application using volumes.
+The container spec is updated accordingly in the deployment.yaml. The configMap has been mounted in the **/config** path of the container.
+Also, the spring boot application **app1** can import the configuration from the mounted folder using the **spring.config.import: file:/config/application.yml** property in the bootstrap.yml file.
+This will import the configuration from the mounted application.yml and bootstrap the application.
+
+In addition to this, to facilitate hot reloading of properties we have used **@RefreshScope** annotation(on TestController.java), which refreshes the environment of the spring context and hence properties imported using **@Value** and **@ConfigurationProperties** are refreshed without restarting the entire application.
+For this **spring-boot-actuator** is required in the classpath. Also the **refresh** endpoint has to be enabled in the application.yml file.
+
+After a configMap is updated, we can just send a POST request to the **/actuator/refresh** endpoint and the context will be refreshed automatically.
+We can verify this using the **/test** endpoint of app1.
+
+Please note that after the configMap has been updated, it takes some time for the pod/container to sync the latest changes in the mounted volume. Hence keep hitting **/actuator/refresh** endpoint until you get a valid response(It may take 30-60 seconds).
