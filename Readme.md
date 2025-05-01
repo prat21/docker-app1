@@ -139,3 +139,8 @@ After a configMap is updated, we can just send a POST request to the **/actuator
 We can verify this using the **/test** endpoint of app1.
 
 Please note that after the configMap has been updated, it takes some time for the pod/container to sync the latest changes in the mounted volume. Hence keep hitting **/actuator/refresh** endpoint until you get a valid response(It may take 30-60 seconds).
+
+References:
+* [Mounted configmaps are updated automatically](https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically)
+* [Spring Config Import](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files.configtree)
+* [ConfigMaps and Pods](https://kubernetes.io/docs/concepts/configuration/configmap/#configmaps-and-pods)
