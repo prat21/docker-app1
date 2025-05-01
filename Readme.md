@@ -104,4 +104,15 @@ Before this we have to create clusterRole and clusterRoleBinding so that the def
 kubectl apply -f .\k8s\configMapRole.yaml
 ```
 #### Mount configMap as volume in a test pod for testing:
-Create a test pod with alpine base image using **pod-alpine.yaml** file. The options
+Create a test pod with alpine base image using **pod-alpine.yaml** file. The options **tty** and **stdin** in the container spec of the pod manifest file correspond to the **-it** option while running a container using docker or kubectl.
+These options keep the session(/bin/sh) inside the pod alive, otherwise the pod will transition to **complete** status(try by removing the tty and stdin option).
+```
+kubectl apply -f .\k8s\pod-alpine.yaml
+```
+As the **configMap** has been mounted inside **pod-alpine** as a volume at the path **/config**, hence this path should be accessible from inside the pod.
+To test the same, we attach with the session inside the pod using the following command
+```
+kubectl attach -it alpine-pod
+```
+This will open a session inside the pod and from there we can check the path **/config**.
+This path should contain the file **application.yml**.
