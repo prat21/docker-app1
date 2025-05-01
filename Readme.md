@@ -72,6 +72,10 @@ Stop minikube:
 ```
 minikube stop
 ```
+Expose a loadbalancer service in minikube:
+```
+minikube service <service-name>
+```
 Open minikube dashboard:
 ```
 minikube dashboard

@@ -4,8 +4,7 @@ metadata:
   name: app1-config
 data:
   application.yml: |-
-    spring:
-      profiles: minikube
+    spring.config.activate.on-profile: minikube
     server:
       port: 8081
     app2:
