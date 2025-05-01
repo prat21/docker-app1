@@ -10,4 +10,6 @@ data:
       port: 8081
     app2:
       host: app2-service
+    reload:
+      test: reloadTestValue2
     

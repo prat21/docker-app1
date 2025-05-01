@@ -15,6 +15,14 @@ spec:
       containers:
         - name: application1
           image: prat21/app1
+          volumeMounts:
+            - name: app1-config-vol
+              mountPath: "/config"
+              readOnly: true
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: minikube
+      volumes:
+        - name: app1-config-vol
+          configMap:
+            name: app1-config

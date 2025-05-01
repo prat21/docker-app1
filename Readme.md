@@ -103,13 +103,5 @@ Before this we have to create clusterRole and clusterRoleBinding so that the def
 ```
 kubectl apply -f .\k8s\configMapRole.yaml
 ```
-#### Read configMap with help of spring cloud kubernetes project:
-We have used spring cloud kubernetes configmap project to read the configmap details from pods. Reference:
-* [Spring Cloud ConfigMap](https://docs.spring.io/spring-cloud-kubernetes/reference/property-source-config/configmap-propertysource.html)
-* [Spring Cloud Kubernetes Starters](https://docs.spring.io/spring-cloud-kubernetes/reference/getting-started.html)
-* [Youtube tutorial on how to use](https://www.youtube.com/watch?v=DiJ0Na8rWvc)
-
-The configMap name is **app1-config** and the bootstrap property **spring.cloud.kubernetes.config.name = app1-config**. Hence spring cloud configMap automatically looks up config maps with **metadata.name = app1-config** and initializes propertysource. Detailed guideline can be found in the references mentioned above.
-
-Also, we have not used **application.yml** here since we want to completely externalize our configuration and decouple it from the application using configmaps. So while running locally we have to set **spring.profiles.active = local** so that **application-local.yml** can be picked up.
-And while running the apps using docker-compose, the config is picked up from **app1.env** file.
+#### Mount configMap as volume in a test pod for testing:
+Create a test pod with alpine base image using **pod-alpine.yaml** file. The options

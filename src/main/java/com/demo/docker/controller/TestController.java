@@ -1,6 +1,7 @@
 package com.demo.docker.controller;
 
 import com.demo.docker.service.TestService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,17 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/docker/app1")
 public class TestController {
     TestService testService;
-    Environment env;
+    @Value("${reload.test}")
+    private String reloadVal;
 
-    TestController(TestService testService, Environment env){
+    TestController(TestService testService){
         this.testService = testService;
-        this.env = env;
     }
 
     @GetMapping("/test")
     public String test(){
-        System.out.println(env.getProperty("app2.host"));
-        return "testing docker app 1";
+        return reloadVal;
     }
 
     @GetMapping("/connect/app2")

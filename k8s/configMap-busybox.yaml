@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: busybox-config
+data:
+  key1: myval1
+  key2: myval2
+
+    

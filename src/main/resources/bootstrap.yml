@@ -5,3 +5,14 @@ spring:
     kubernetes:
       config:
         name: app1-config
+    reload:
+      enabled: true
+      strategy: restart_context
+management:
+  endpoint:
+    restart:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: restart
