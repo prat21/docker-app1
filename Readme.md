@@ -144,3 +144,36 @@ References:
 * [Mounted configmaps are updated automatically](https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically)
 * [Spring Config Import](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files.configtree)
 * [ConfigMaps and Pods](https://kubernetes.io/docs/concepts/configuration/configmap/#configmaps-and-pods)
+
+### Running application in google kubernetes engine:
+First we have to install the gcloud CLI. 
+
+Also install **gke-gcloud-auth-plugin**. This is necessary for **kubectl** to interact with GKE.
+```
+gcloud components install gke-gcloud-auth-plugin
+```
+Initialize gcloud CLI:
+```
+gcloud init
+```
+To run the application in GKE first we have to create the cluster(autopilot mode) by running the following command:
+```
+gcloud container clusters create-auto <CLUSTER_NAME> --location=asia-south1
+```
+This will create a regional cluster(asia-south1 is MUMBAI).
+
+First create the configMap
+```
+kubectl apply -f .\k8s\configMap.yaml
+```
+Then create the deployment
+```
+kubectl apply -f .\k8s\deployment.yaml
+```
+Then create service
+```
+kubectl apply -f .\k8s\service.yaml
+```
+Do the same for **app2**(except for configMap)
+
+**Note:** There maybe initial error in pod scheduling since the cluster runs in autopilot mode and may take some time to provision resources.
