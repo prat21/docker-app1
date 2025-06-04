@@ -177,3 +177,37 @@ kubectl apply -f .\k8s\service.yaml
 Do the same for **app2**(except for configMap)
 
 **Note:** There maybe initial error in pod scheduling since the cluster runs in autopilot mode and may take some time to provision resources.
+
+### Running test pod in google kubernetes engine with cloud storage FUSE CSI driver:
+Reference:
+* [Quickstart: Access Cloud Storage buckets with the FUSE CSI driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/cloud-storage-fuse-csi-driver)
+
+First create a cloud storage bucket and upload some files for testing from cloud console. Make sure Uniform bucket level access is configured instead of fine-grained ACLs.
+
+#### Configure access to cloud storage bucket using gke workload identity:
+```
+kubectl create namespace <NAMESPACE_NAME>
+kubectl create serviceaccount <KUBERNETES_SERVICE_ACCOUNT_NAME> --namespace <NAMESPACE_NAME>
+gcloud storage buckets add-iam-policy-binding gs://BUCKET_NAME --member "principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/PROJECT_ID.svc.id.goog/subject/ns/NAMESPACE_NAME/sa/KUBERNETES_SERVICE_ACCOUNT_NAME" --role "roles/storage.objectAdmin"
+```
+Reference:
+* [Configure access to Cloud Storage buckets](https://cloud.google.com/kubernetes-engine/docs/how-to/cloud-storage-fuse-csi-driver-setup#authentication)
+
+#### Create a test pod and mount the cloud storage bucket as ephemeral volume using cloud FUSE driver:
+Apply the pod manifest to create the test pod
+```
+kubectl apply -f .\k8s\pod-csi-fuse-test.yaml
+```
+This will create a pod and mount the **pratbucket** bucket as ephemeral volume at the path **fusevol**. Now we can access the volume from within the container.
+First initiate an interactive session in the pod.
+```
+kubectl exec -it fuse-pod -n my-space -- busybox bash
+```
+Then check the contents of the **fusevol** folder(from within the interactive bash session).
+```
+cd fusevol
+cat <ANY_FILE_OF_THE_BUCKET>
+```
+The file should be accessible.
+
+**Note**: Check [Mount Cloud Storage buckets as persistent volumes](https://cloud.google.com/kubernetes-engine/docs/how-to/cloud-storage-fuse-csi-driver-pv) to see how to mount cloud storage buckets as persistent volumes.

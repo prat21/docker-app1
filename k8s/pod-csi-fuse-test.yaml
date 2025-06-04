@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fuse-pod
+  namespace: my-space
+  annotations:
+    gke-gcsfuse/volumes: "true"
+spec:
+  serviceAccountName: my-service-account
+  securityContext:
+    runAsUser: 1001
+    runAsGroup: 2002
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sleep"]
+      args: ["infinity"]
+      volumeMounts:
+        - name: csi-fuse-volume
+          mountPath: /fusevol
+          readOnly: true
+  volumes:
+    - name: csi-fuse-volume
+      csi:
+        driver: gcsfuse.csi.storage.gke.io
+        volumeAttributes:
+          bucketName: pratbucket
+          mountOptions: "implicit-dirs,uid=1001,gid=2002"
