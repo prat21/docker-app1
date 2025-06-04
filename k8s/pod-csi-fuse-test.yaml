@@ -7,9 +7,6 @@ metadata:
     gke-gcsfuse/volumes: "true"
 spec:
   serviceAccountName: my-service-account
-  securityContext:
-    runAsUser: 1001
-    runAsGroup: 2002
   containers:
     - name: busybox
       image: busybox
@@ -25,4 +22,4 @@ spec:
         driver: gcsfuse.csi.storage.gke.io
         volumeAttributes:
           bucketName: pratbucket
-          mountOptions: "implicit-dirs,uid=1001,gid=2002"
+          mountOptions: "implicit-dirs"
