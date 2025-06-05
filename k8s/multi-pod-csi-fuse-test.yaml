@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fuse-pod1
+  namespace: my-space
+  annotations:
+    gke-gcsfuse/volumes: "true"
+spec:
+  serviceAccountName: my-service-account
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sleep"]
+      args: ["infinity"]
+      volumeMounts:
+        - name: csi-fuse-volume1
+          mountPath: /fusevol
+  volumes:
+    - name: csi-fuse-volume1
+      csi:
+        driver: gcsfuse.csi.storage.gke.io
+        volumeAttributes:
+          bucketName: pratbucket
+          mountOptions: "implicit-dirs"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fuse-pod2
+  namespace: my-space
+  annotations:
+    gke-gcsfuse/volumes: "true"
+spec:
+  serviceAccountName: my-service-account
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sleep"]
+      args: ["infinity"]
+      volumeMounts:
+        - name: csi-fuse-volume2
+          mountPath: /fusevol
+  volumes:
+    - name: csi-fuse-volume2
+      csi:
+        driver: gcsfuse.csi.storage.gke.io
+        volumeAttributes:
+          bucketName: pratbucket
+          mountOptions: "implicit-dirs"

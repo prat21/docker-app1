@@ -211,3 +211,19 @@ cat <ANY_FILE_OF_THE_BUCKET>
 The file should be accessible.
 
 **Note**: Check [Mount Cloud Storage buckets as persistent volumes](https://cloud.google.com/kubernetes-engine/docs/how-to/cloud-storage-fuse-csi-driver-pv) to see how to mount cloud storage buckets as persistent volumes.
+
+### Create multiple test pods with the same cloud storage bucket as ephemeral volume to test parallel read writes:
+Apply the pod manifest to create two pods with the same cloud storage bucket as ephemeral volume:
+```
+kubectl apply -f .\k8s\multi-pod-csi-fuse-test.yaml
+```
+This will create two pods **fuse-pod1** and **fuse-pod2** with the same cloud storage bucket **pratbucket** as volume.
+
+Initiate interactive sessions from both the pods(in separate terminals):
+```
+kubectl exec -it fuse-pod1 -n my-space -- busybox bash
+kubectl exec -it fuse-pod2 -n my-space -- busybox bash
+```
+Try creating a new file in **fuse-pod1** session inside the **fusevol** volume and check whether the same reflects on the **fusevol** volume of **fuse-pod2** session. Do the same for deletion of a file. 
+
+We can see that the creation and deletion gets synched across all the volumes linked to the bucket, thus demonstrating that cloud storage FUSE csi driver supports ReadWriteMany mode. 
