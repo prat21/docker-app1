@@ -15,7 +15,6 @@ spec:
       volumeMounts:
         - name: csi-fuse-volume
           mountPath: /fusevol
-          readOnly: true
   volumes:
     - name: csi-fuse-volume
       csi:

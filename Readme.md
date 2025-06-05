@@ -182,7 +182,7 @@ Do the same for **app2**(except for configMap)
 Reference:
 * [Quickstart: Access Cloud Storage buckets with the FUSE CSI driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/cloud-storage-fuse-csi-driver)
 
-First create a cloud storage bucket and upload some files for testing from cloud console. Make sure Uniform bucket level access is configured instead of fine-grained ACLs.
+First create a cloud storage bucket and upload some files for testing from cloud console. Make sure **Uniform bucket level access** is configured instead of fine-grained ACLs.
 
 #### Configure access to cloud storage bucket using gke workload identity:
 ```
