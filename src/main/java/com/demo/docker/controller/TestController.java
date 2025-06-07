@@ -3,9 +3,13 @@ package com.demo.docker.controller;
 import com.demo.docker.service.TestService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/docker/app1")
@@ -27,5 +31,15 @@ public class TestController {
     @GetMapping("/connect/app2")
     public String connectApp2(){
         return testService.testConnect();
+    }
+
+    @GetMapping("/bucket/files")
+    public Set<String> listFilesOfCloudStorageBucket(@RequestParam String dir) {
+        File directory = new File(dir);
+        var files = directory.listFiles();
+        return Stream.of(files)
+                .filter(file -> !file.isDirectory())
+                .map(File::getName)
+                .collect(Collectors.toSet());
     }
 }
