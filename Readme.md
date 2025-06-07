@@ -226,4 +226,17 @@ kubectl exec -it fuse-pod2 -n my-space -- busybox bash
 ```
 Try creating a new file in **fuse-pod1** session inside the **fusevol** volume and check whether the same reflects on the **fusevol** volume of **fuse-pod2** session. Do the same for deletion of a file. 
 
-We can see that the creation and deletion gets synched across all the volumes linked to the bucket, thus demonstrating that cloud storage FUSE csi driver supports ReadWriteMany mode. 
+We can see that the creation and deletion gets synched across all the volumes linked to the bucket, thus demonstrating that cloud storage FUSE csi driver supports ReadWriteMany mode.
+
+### Create a test pod of "app1" with cloud storage bucket as ephemeral volume:
+Apply the pod manifest to create a pod of **app1** with **pratbucket** as mounted volume.
+```
+kubectl apply -f .\k8s\pod-app-csi-fuse-test.yaml
+```
+While the pod starts, check the logs of the pod:
+```
+kubectl logs app1-fuse-pod -n my-space
+```
+You will notice that the contents of the **fusevol** volume is printed in the startup logs of the application(due to the commandLineRunner in the DockerApp1 class).
+This shows that the cloud storage bucket was successfully mounted in the **fusevol** volume inside the pod.
+

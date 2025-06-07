@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1-fuse-dep
+  namespace: my-space
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: first-app-fuse
+  template:
+    metadata:
+      labels:
+        app: first-app-fuse
+      annotations:
+        gke-gcsfuse/volumes: "true"
+    spec:
+      serviceAccountName: my-service-account
+      containers:
+        - name: application1
+          image: prat21/app1
+          volumeMounts:
+            - name: app1-config-vol
+              mountPath: "/config"
+              readOnly: true
+            - name: csi-fuse-app-volume
+              mountPath: /fusevol
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: minikube
+      volumes:
+        - name: app1-config-vol
+          configMap:
+            name: app1-config
+        - name: csi-fuse-app-volume
+          csi:
+            driver: gcsfuse.csi.storage.gke.io
+            volumeAttributes:
+              bucketName: pratbucket
+              mountOptions: "implicit-dirs"

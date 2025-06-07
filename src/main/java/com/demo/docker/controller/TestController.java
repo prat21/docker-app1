@@ -34,8 +34,8 @@ public class TestController {
     }
 
     @GetMapping("/bucket/files")
-    public Set<String> listFilesOfCloudStorageBucket(@RequestParam String dir) {
-        File directory = new File(dir);
+    public Set<String> listFilesOfCloudStorageBucket(@RequestParam String volume) {
+        File directory = new File(volume);
         var files = directory.listFiles();
         return Stream.of(files)
                 .filter(file -> !file.isDirectory())
