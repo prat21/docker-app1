@@ -249,4 +249,6 @@ kubectl apply -f .\k8s\service-csi-fuse.yaml
 Once the service is ready with an external IP, call the get endpoint **/docker/app1/bucket/files** with request parameter **volume=/fusevol.**
 The endpoint returns the list of files of the directory/volume given as input by the request param **volume.**
 
-The retuned list of files proves that the bucket was mounted successfully(at **fusevol** mount path) inside the pods of the deployment.
+The returned list of files proves that the bucket was mounted successfully(at **fusevol** mount path) inside the pods of the deployment.
+
+To upload a file into the volume/bucket, use the POST endpoint **/docker/app1/upload** and attach the file as form-data request body. After the upload is successful, check whether the file got uploaded or not in the cloud storage bucket.
