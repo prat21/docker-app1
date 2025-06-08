@@ -2,3 +2,4 @@ server.port: 8081
 app2.host: localhost
 reload:
   test: reloadTestValue44
+file.upload.path: src/main/resources/

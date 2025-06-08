@@ -11,5 +11,6 @@ data:
       host: app2-service
     reload:
       test: reloadTestValue44
+    file.upload.path: /fusevol
     management.endpoints.web.exposure.include: refresh
     
