@@ -1,5 +1,7 @@
 # Docker App 1
-This is a sample java spring boot application with dockerfile. This is to demonstrate how to containerize java applications using docker and kubernetes.
+This is a sample java spring boot application with dockerfile. This is to demonstrate how to containerize java applications using docker and kubernetes and deploy the same in **GKE**.
+
+Also, this app demonstrates how we can connect to **google cloud storage** and **cloud sql** from GKE application using **cloud storage FUSE CSI driver** and **cloud sql auth proxy** respectively.
 
 ## Supporting App
 This app tries to make connection with **app2** and hence running app2 parallely is also crucial.
@@ -174,7 +176,9 @@ Then create service
 ```
 kubectl apply -f .\k8s\service.yaml
 ```
-Do the same for **app2**(except for configMap)
+Do the same for **app2**(except for configMap). 
+
+After the deployments are done for app1 and app2, test the connectivity from app1 to app2 from postman.
 
 **Note:** There maybe initial error in pod scheduling since the cluster runs in autopilot mode and may take some time to provision resources.
 
