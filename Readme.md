@@ -240,6 +240,10 @@ kubectl logs app1-fuse-pod -n my-space
 You will notice that the contents of the **fusevol** volume is printed in the startup logs of the application(due to the commandLineRunner in the DockerApp1 class).
 This shows that the cloud storage bucket was successfully mounted in the **fusevol** volume inside the pod.
 
+**Reference**:
+* [Quickstart: Access Cloud Storage buckets with the FUSE CSI driver](https://cloud.google.com/kubernetes-engine/docs/how-to/persistent-volumes/cloud-storage-fuse-csi-driver)
+* [Mount Cloud Storage buckets as CSI ephemeral volumes](https://cloud.google.com/kubernetes-engine/docs/how-to/cloud-storage-fuse-csi-driver-ephemeral)
+
 ### Create a deployment and service of "app1" with cloud storage bucket as ephemeral volume:
 Apply the deployment and service manifest to create exposed deployment of **app1** application with cloud storage bucket mounted as ephemeral volume:
 ```
