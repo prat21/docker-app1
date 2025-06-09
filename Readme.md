@@ -256,3 +256,21 @@ The endpoint returns the list of files of the directory/volume given as input by
 The returned list of files proves that the bucket was mounted successfully(at **fusevol** mount path) inside the pods of the deployment.
 
 To upload a file into the volume/bucket, use the POST endpoint **/docker/app1/upload** and attach the file as form-data request body. After the upload is successful, check whether the file got uploaded or not in the cloud storage bucket.
+
+### Create a deployment and service of "app1" with cloud storage bucket as persistent volume:
+First we have to create persistent volume and persistent volume claim for this:
+```
+kubectl apply -f .\k8s\persistentVolume-csi-fuse.yaml
+kubectl apply -f .\k8s\persistentVolumeClaim-csi-fuse.yaml
+```
+Next we will create the deployment and a corresponding loadbalancer service:
+```
+kubectl apply -f .\k8s\deployment-pv-csi-fuse.yaml
+kubectl apply -f .\k8s\service-pv-csi-fuse.yaml
+```
+This will create a deployment with the cloud storage bucket mounted as persistent volume claims in the pods.
+Now we can do **list files** and **upload files** operation same as we did with ephemeral volumes in the previous task.
+The difference is that here we are using persistent volumes instead of ephemeral volumes.
+
+**Reference**:
+* [Mount Cloud Storage buckets as persistent volumes](https://cloud.google.com/kubernetes-engine/docs/how-to/cloud-storage-fuse-csi-driver-pv)
