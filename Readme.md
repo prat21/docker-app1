@@ -278,3 +278,34 @@ The difference is that here we are using persistent volumes instead of ephemeral
 
 **Reference**:
 * [Mount Cloud Storage buckets as persistent volumes](https://cloud.google.com/kubernetes-engine/docs/how-to/cloud-storage-fuse-csi-driver-pv)
+
+### [Additional Info] Create cloud sql instance in GCP and connect from local PC via MySQL Workbench tool:
+* First create a cloud sql instance(say MySQL) from google cloud console. Make sure that public IP is selected.
+* Add your PC's IPv4 address into the authorized network option of the cloud sql instance. This can be done during or after the creation of the instance. 
+Kindly note that **ipconfig** command would not give the correct IP address of your PC(maybe because it is behind a router). Try to find actual IPv4 ip from online tools by searching **what is my ip** in google.
+* Download and install the MySQL workbench tool. In the new connection dialog provide the public IP of the cloud sql instance alongwith username(maybe **root**) and password. Establish connection.
+
+**References:**
+* [About Cloud SQL connections](https://cloud.google.com/sql/docs/mysql/connect-overview#public_ip)
+* [Connect from other MySQL tools](https://cloud.google.com/sql/docs/mysql/admin-tools)
+
+### [Additional Info] Create cloud sql instance in GCP and connect from local PC via cloud-sql-auth-proxy connector:
+* Create cloud sql instance as described in the previous section.
+* Download cloud sql auth proxy (the steps to download the proxy is given in the official google docs in the reference link here)
+* Set the application default credential using your google CLI login account. This is required by cloud auth proxy to connect to cloud sql with required permissions (the alternate is to create a service account with necessary privileges and create a credential JSON file from that and use the same with **--credentials-file** flag)
+```
+gcloud auth application-default login
+```
+* Get the instance connection name of the cloud sql instance:
+```
+    gcloud sql instances describe <INSTANCE_NAME> --format='value(connectionName)'
+```
+* Connect to the cloud sql instance using cloud sql auth proxy. This will open a TCP socket connection at localhost on the specified PORT_NUMBER.
+```
+.\cloud-sql-proxy.x64.exe --port <PORT_NUMBER> <INSTANCE_CONNECTION_NAME>
+```
+* Try to connect to the cloud sql proxy connection from MySQL workbench using host=127.0.0.1 and port=PORT_NUMBER as given above. It should be able to connect.
+
+**References:**
+* [Connect using the Cloud SQL Auth Proxy](https://cloud.google.com/sql/docs/mysql/connect-auth-proxy)
+* [About the Cloud SQL Auth Proxy](https://cloud.google.com/sql/docs/mysql/sql-proxy)
