@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1-cloud-sql-dep
+  namespace: my-space
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: first-app-cloud-sql-fuse
+  template:
+    metadata:
+      labels:
+        app: first-app-cloud-sql-fuse
+    spec:
+      serviceAccountName: my-service-account
+      containers:
+        - name: application1
+          image: prat21/app1
+          volumeMounts:
+            - name: app1-config-vol
+              mountPath: "/config"
+              readOnly: true
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: minikube
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-sql-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-sql-secret
+                  key: password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-sql-secret
+                  key: database
+      initContainers:
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
+          restartPolicy: Always
+          args:
+            - "--auto-iam-authn"
+            - "--structured-logs"
+            - "--port=1234"
+            - "precise-passkey-458619-a3:us-central1:my-sql-instance"
+      volumes:
+        - name: app1-config-vol
+          configMap:
+            name: app1-config

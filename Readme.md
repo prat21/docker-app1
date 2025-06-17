@@ -282,7 +282,8 @@ The difference is that here we are using persistent volumes instead of ephemeral
 ### [Additional Info] Create cloud sql instance in GCP and connect from local PC via MySQL Workbench tool:
 * First create a cloud sql instance(say MySQL) from google cloud console. Make sure that public IP is selected.
 * Add your PC's IPv4 address into the authorized network option of the cloud sql instance. This can be done during or after the creation of the instance. 
-Kindly note that **ipconfig** command would not give the correct IP address of your PC(maybe because it is behind a router). Try to find actual IPv4 ip from online tools by searching **what is my ip** in google.
+Kindly note that **ipconfig** command would not give the correct IP address of your PC(maybe because it is behind a router). Try to find actual IPv4 ip from online tools by searching **what is my ip** in google. 
+Also, the IPv4 address may change from time to time, so recheck if the connection fails.
 * Download and install the MySQL workbench tool. In the new connection dialog provide the public IP of the cloud sql instance alongwith username(maybe **root**) and password. Establish connection.
 
 **References:**
