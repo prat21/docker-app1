@@ -7,16 +7,16 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: first-app-cloud-sql-fuse
+      app: first-app-cloud-sql
   template:
     metadata:
       labels:
-        app: first-app-cloud-sql-fuse
+        app: first-app-cloud-sql
     spec:
       serviceAccountName: my-service-account
       containers:
         - name: application1
-          image: prat21/app1
+          image: prat21/app1:4
           volumeMounts:
             - name: app1-config-vol
               mountPath: "/config"
