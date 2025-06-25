@@ -323,6 +323,10 @@ gcloud sql instances patch <INSTANCE_NAME> --database-flags=cloudsql_iam_authent
 kubectl create namespace <KUBERNETES_NAMESPACE_NAME>
 kubectl create serviceaccount <KUBERNETES_SERVICE_ACCOUNT> --namespace <NAMESPACE_NAME>
 ```
+* Create kubernetes secret for DB credentials:
+```
+kubectl create secret generic cloud-sql-secret --from-literal=username=root --from-literal=password=password --from-literal=database=TEST_DB -n my-space
+```
 * Create a GCP service account in GCP console IAM page.
 * Grant the GCP service account with cloud sql client and logs writer roles:
 ```
@@ -373,6 +377,10 @@ Also, we have set the spring profile as **auto-iam-auth** as that will be requir
 kubectl create namespace <KUBERNETES_NAMESPACE_NAME>
 kubectl create serviceaccount <KUBERNETES_SERVICE_ACCOUNT> --namespace <NAMESPACE_NAME>
 ```
+* Create kubernetes secret for DB credentials:
+```
+kubectl create secret generic cloud-sql-secret --from-literal=username=root --from-literal=password=password --from-literal=database=TEST_DB -n my-space
+```
 * Create a GCP service account in GCP console IAM page.
 * Grant the GCP service account with cloud sql client and logs writer roles:
 ```
@@ -399,6 +407,7 @@ kubectl apply -f .\k8s\deployment-cloud-sql-proxy-builtin-auth.yaml
 kubectl apply -f .\k8s\service-cloud-sql.yaml
 ```
 Note that in the deployment-cloud-sql-proxy-builtin-auth.yaml file there is no **--auto-iam-authn** flag as we are using database builtin authentication here.
+
 Also, we have set the spring profile as **database-auth** as that will be required to pick the database credentials from configmap for connecting via "database builtin authentication".
 
 **References:**
