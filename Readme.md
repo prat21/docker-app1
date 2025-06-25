@@ -361,3 +361,29 @@ Also, we have provided **--auto-iam-authn** as an argument to the cloud-sql-prox
 * [Add an individual IAM user or service account to a Cloud SQL instance](https://cloud.google.com/sql/docs/mysql/add-manage-iam-users#creating-a-database-user)
 * [Setup GCP service account](https://cloud.google.com/sql/docs/postgres/connect-instance-kubernetes#set_up_a_service_account)
 * [Configure existing instances for IAM database authentication](https://cloud.google.com/sql/docs/postgres/create-edit-iam-instances#configure-existing)
+
+### Useful debugging tips:
+* To check logs of a pod in rolling manner:
+```
+kubectl logs <POD_NAME>  -n <NAMESPACE_NAME> -f
+```
+* To check logs of a particular container inside pod:
+```
+kubectl logs <POD_NAME> -c <CONTAINER_NAME> -n <NAMESPACE_NAME> -f
+```
+* To initiate an interactive session inside a pod:
+```
+kubectl exec --stdin --tty <POD_NAME> -n <NAMESPACE> -- /bin/sh
+```
+* Sometimes when you update the application, build the image using docker locally and push it to docker hub and afterwards redeploy the application in GKE using deployment yaml files, the updated image may not get pulled from docker hub.
+To check whether the GKE deployment is using the latest image of the application or not we can compare the unique image ID of the latest image in the docker hub and the image ID of the application container being used by the deployment pod.
+The latest image ID of the application can be checked from the docker hub portal under **Image Management** tab.
+To check the image ID of the application container we can check the output of the below command:
+```
+kubectl describe pod <POD_NAME> -n <NAMESPACE>
+```
+* Another way to ensure that the deployment uses the latest image is that we can tag the image with unique version while building the image and then use the same image tag in our deployment file.
+```
+docker build -t prat21/app1:<UNIQUE_TAG> .
+docker push prat21/app1:<UNIQUE_TAG>
+```
