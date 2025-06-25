@@ -23,7 +23,7 @@ spec:
               readOnly: true
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: minikube
+              value: database-auth
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
@@ -44,7 +44,6 @@ spec:
           image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
           restartPolicy: Always
           args:
-            - "--auto-iam-authn"
             - "--structured-logs"
             - "--port=1234"
             - "precise-passkey-458619-a3:us-central1:my-sql-instance"

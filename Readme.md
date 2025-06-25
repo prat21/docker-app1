@@ -312,6 +312,7 @@ gcloud sql instances describe <INSTANCE_NAME> --format='value(connectionName)'
 * [About the Cloud SQL Auth Proxy](https://cloud.google.com/sql/docs/mysql/sql-proxy)
 
 ### Create cloud sql instance in GCP and connect from GKE via cloud-sql-auth-proxy connector:
+#### Using Auto IAM Authentication
 * Create cloud sql instance as described in the previous sections.
 * Patch the cloud sql instance to enable auto IAM authentication:
 ```
@@ -349,18 +350,59 @@ GRANT ALL PRIVILEGES ON <DB_NAME>.* TO '<USER>'@'%';
 * Finally, deploy the application in GKE by creating configmap, deployment and service:
 ```
 kubectl apply -f .\k8s\configMap.yaml -n <KUBERNETES_NAMESPACE_NAME>
-kubectl apply -f .\k8s\deployment-cloud-sql-proxy.yaml
+kubectl apply -f .\k8s\deployment-cloud-sql-proxy-auto-iam-auth.yaml
 kubectl apply -f .\k8s\service-cloud-sql.yaml
 ```
-Note that in the **deployment-cloud-sql-proxy.yaml** file we are using the same kubernetes service account as we created earlier. 
+Note that in the **deployment-cloud-sql-proxy-auto-iam-auth.yaml** file we are using the same kubernetes service account as we created earlier. 
 This service account will leverage the workload identity federation to connect to cloud sql via the GCP service account(which already has the required privileges).
-Also, we have provided **--auto-iam-authn** as an argument to the cloud-sql-proxy sidecar for enabling auto IAM authentication to authenticate against cloud sql.
+
+We have provided **--auto-iam-authn** as an argument to the cloud-sql-proxy sidecar for enabling auto IAM authentication to authenticate against cloud sql.
+
+Also, we have set the spring profile as **auto-iam-auth** as that will be required to pick the database credentials from configmap for connecting via "auto IAM authentication".
 
 **References:**
 * [Connect to Cloud SQL from Google Kubernetes Engine](https://cloud.google.com/sql/docs/mysql/connect-kubernetes-engine)
 * [Add an individual IAM user or service account to a Cloud SQL instance](https://cloud.google.com/sql/docs/mysql/add-manage-iam-users#creating-a-database-user)
 * [Setup GCP service account](https://cloud.google.com/sql/docs/postgres/connect-instance-kubernetes#set_up_a_service_account)
 * [Configure existing instances for IAM database authentication](https://cloud.google.com/sql/docs/postgres/create-edit-iam-instances#configure-existing)
+
+#### Using Database Builtin Authentication:
+* Create cloud sql instance as described in the previous sections.
+* Create kubernetes namespace and service account:
+```
+kubectl create namespace <KUBERNETES_NAMESPACE_NAME>
+kubectl create serviceaccount <KUBERNETES_SERVICE_ACCOUNT> --namespace <NAMESPACE_NAME>
+```
+* Create a GCP service account in GCP console IAM page.
+* Grant the GCP service account with cloud sql client and logs writer roles:
+```
+gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/cloudsql.instanceUser"
+gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/cloudsql.client"
+gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/logging.logWriter"
+```
+* Create workload identity federation by linking kubernetes service account and GCP service account:
+```
+gcloud iam service-accounts add-iam-policy-binding <GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com --role="roles/iam.workloadIdentityUser" --member="serviceAccount:<GCP_PROJECT_ID>.svc.id.goog[<KUBERNETES_NAMESPACE_NAME>/<KUBERNETES_SERVICE_ACCOUNT>]"
+```
+* Annotate the kubernetes service account:
+```
+kubectl annotate serviceaccount <KUBERNETES_SERVICE_ACCOUNT> iam.gke.io/gcp-service-account=<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com --namespace=<KUBERNETES_NAMESPACE_NAME>
+```
+* Create a cloud sql user.
+```
+gcloud sql users create prat --host=% --instance=<INSTANCE_NAME> --password=password
+```
+* Finally, deploy the application in GKE by creating configmap, deployment and service:
+```
+kubectl apply -f .\k8s\configMap.yaml -n <KUBERNETES_NAMESPACE_NAME>
+kubectl apply -f .\k8s\deployment-cloud-sql-proxy-builtin-auth.yaml
+kubectl apply -f .\k8s\service-cloud-sql.yaml
+```
+Note that in the deployment-cloud-sql-proxy-builtin-auth.yaml file there is no **--auto-iam-authn** flag as we are using database builtin authentication here.
+Also, we have set the spring profile as **database-auth** as that will be required to pick the database credentials from configmap for connecting via "database builtin authentication".
+
+**References:**
+* [Manage users with built-in authentication](https://cloud.google.com/sql/docs/mysql/create-manage-users)
 
 ### Useful debugging tips:
 * To check logs of a pod in rolling manner:
