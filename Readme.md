@@ -164,7 +164,7 @@ gcloud container clusters create-auto <CLUSTER_NAME> --location=asia-south1
 ```
 To run docker images built and pushed from macOS arm64 architecture, create a standard cluster with arm64 architecture:
 ```
-gcloud container clusters create <CLUSTER_NAME> --zone=asia-south1-a --machine-type=t2a-standard-1 --num-nodes=2
+gcloud container clusters create <CLUSTER_NAME> --zone=us-central1-a --machine-type=t2a-standard-1 --num-nodes=2
 ```
 This will create a regional cluster(asia-south1 is MUMBAI).
 
