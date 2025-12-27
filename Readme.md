@@ -455,7 +455,7 @@ docker push prat21/app1:<UNIQUE_TAG>
 ### TODO for later:
 #### Using environment variables in configMaps:
 * Kubernetes does not support using env variables in configMaps out of the box. Because configMaps are static key-value pairs which needs to be created before any of the deployment which consumes the configMap.
-* Hence, injecting sensitive data in configMaps (example DB credentials) using env variables(obtained from kubernetes secrets maybe) is tricky.
-* In spring applications though, the env variables gets substituted with their values in the configuration files (example application.yml) during bootstrap process. This is also possible using spring cloud config server.
-* So, for using env vars in configMaps some abstraction is needed which will do the job of substituting the env variable values. **Spring Cloud Kubernetes Config Server** can be used for the same. For this a deployment has to be created (with a ClusterIP service maybe so that services can access the config server internally within the cluster) for config server. The docker image for this is available in public docker repo.
-* Or the alternative will be to use spring cloud config server with git repo as backend. Also since kubernetes secrets do not encrypt data at rest, hence we can use some alternate secret management service like GCP secret manager.
+And environment variables are available only during the pod/container runtime.
+* Although we can use env variables in configMap for spring boot project, since spring replaces the env variables with actual value during bootstrap. 
+For this project the env variables in configMap are replaced by values from kubernetes secrets that are placed in the pod spec of the deployment manifest file.
+* Next attempt would be to use google cloud secret manager for storing the secrets and then inject the same as env variables in the pod spec(maybe using CSI driver for secret manager).
