@@ -164,7 +164,7 @@ gcloud container clusters create-auto <CLUSTER_NAME> --location=asia-south1
 ```
 To run docker images built and pushed from macOS arm64 architecture, create a standard cluster with arm64 architecture:
 ```
-gcloud container clusters create <CLUSTER_NAME> --zone=us-central1-a --machine-type=t2a-standard-1 --num-nodes=2
+gcloud container clusters create <CLUSTER_NAME> --zone=us-central1-a --machine-type=t2a-standard-1 --num-nodes=2 --workload-pool=<PROJECT_ID>.svc.id.goog
 ```
 This will create a regional cluster(asia-south1 is MUMBAI).
 
@@ -330,13 +330,17 @@ kubectl create serviceaccount <KUBERNETES_SERVICE_ACCOUNT> --namespace <NAMESPAC
 ```
 * Create kubernetes secret for DB credentials:
 ```
-kubectl create secret generic cloud-sql-secret --from-literal=username=root --from-literal=password=password --from-literal=database=TEST_DB -n my-space
+kubectl apply -f ./k8s/secrets.yaml
 ```
 * Create a GCP service account in GCP console IAM page.
 * Grant the GCP service account with cloud sql client and logs writer roles:
 ```
 gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/cloudsql.instanceUser"
+```
+```
 gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/cloudsql.client"
+```
+```
 gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/logging.logWriter"
 ```
 * Create workload identity federation by linking kubernetes service account and GCP service account:
@@ -384,13 +388,17 @@ kubectl create serviceaccount <KUBERNETES_SERVICE_ACCOUNT> --namespace <NAMESPAC
 ```
 * Create kubernetes secret for DB credentials:
 ```
-kubectl create secret generic cloud-sql-secret --from-literal=username=root --from-literal=password=password --from-literal=database=TEST_DB -n my-space
+kubectl apply -f ./k8s/secrets.yaml
 ```
 * Create a GCP service account in GCP console IAM page.
 * Grant the GCP service account with cloud sql client and logs writer roles:
 ```
 gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/cloudsql.instanceUser"
+```
+```
 gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/cloudsql.client"
+```
+```
 gcloud projects add-iam-policy-binding <GCP_PROJECT_ID> --member="serviceAccount:<GCP_SERVICE_ACCOUNT_NAME>@<GCP_PROJECT_ID>.iam.gserviceaccount.com" --role="roles/logging.logWriter"
 ```
 * Create workload identity federation by linking kubernetes service account and GCP service account:

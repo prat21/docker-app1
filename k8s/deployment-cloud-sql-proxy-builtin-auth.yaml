@@ -14,9 +14,13 @@ spec:
         app: first-app-cloud-sql
     spec:
       serviceAccountName: my-service-account
+      # This selector is applicable when pushing the docker image from mac because of mac's arm64 architecture
+      # Remove this nodeSelector if your docker image is built and pushed from windows
+      nodeSelector:
+        kubernetes.io/arch: arm64
       containers:
         - name: application1
-          image: prat21/app1:4
+          image: prat21/app1
           volumeMounts:
             - name: app1-config-vol
               mountPath: "/config"
@@ -41,12 +45,12 @@ spec:
                   key: database
       initContainers:
         - name: cloud-sql-proxy
-          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.20.0
           restartPolicy: Always
           args:
             - "--structured-logs"
             - "--port=1234"
-            - "precise-passkey-458619-a3:us-central1:my-sql-instance"
+            - "project-f853f150-bd21-4684-91a:us-central1:my-sql-instance"
       volumes:
         - name: app1-config-vol
           configMap:
