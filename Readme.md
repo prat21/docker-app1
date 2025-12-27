@@ -158,9 +158,13 @@ Initialize gcloud CLI:
 ```
 gcloud init
 ```
-To run the application in GKE first we have to create the cluster(autopilot mode) by running the following command:
+To run the application in GKE first we have to create the cluster(autopilot mode) by running the following command(this is applicable for windows):
 ```
 gcloud container clusters create-auto <CLUSTER_NAME> --location=asia-south1
+```
+To run docker images built and pushed from macOS arm64 architecture, create a standard cluster with arm64 architecture:
+```
+gcloud container clusters create <CLUSTER_NAME> --zone=asia-south1-a --machine-type=t2a-standard-1 --num-nodes=2
 ```
 This will create a regional cluster(asia-south1 is MUMBAI).
 

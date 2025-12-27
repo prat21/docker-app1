@@ -12,6 +12,10 @@ spec:
       labels:
         app: first-app
     spec:
+      # This selector is applicable when pushing the docker image from mac because of mac's arm64 architecture
+      # Remove this nodeSelector if your docker image is built and pushed from windows
+      nodeSelector:
+        kubernetes.io/arch: arm64
       containers:
         - name: application1
           image: prat21/app1
